@@ -18,6 +18,7 @@ Module.register('MMM-AirQuality', {
                 }
             ],
             colour: true,
-            timeSince: true
+            timeSince: true,
+            updateInterval: 60 // once every minute
     }
 });
