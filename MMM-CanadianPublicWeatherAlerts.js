@@ -20,5 +20,12 @@ Module.register('MMM-AirQuality', {
             colour: true,
             timeSince: true,
             updateInterval: 60 // once every minute
+    },
+    start: function () {
+        Log.log("Starting module: " + this.name);
+        if (this.data.classes === "MMM-CanadianPublicWeatherAlerts") {
+            this.data.classes = "bright medium";
+        }
+
     }
 });
