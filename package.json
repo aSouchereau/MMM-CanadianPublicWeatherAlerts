@@ -1,0 +1,36 @@
+{
+  "name": "MMM-CanadianPublicWeatherAlerts",
+  "version": "1.0.0",
+  "displayName": "MMM-CanadianPublicWeatherAlerts",
+  "description": "",
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aSouchereau/MMM-CanadianPublicWeatherAlerts.git"
+  },
+  "keywords": [
+    "MagicMirror",
+    "Canada",
+    "Alerts",
+    "Weather",
+    "Watch",
+    "Warning",
+    "Regions",
+    "Provinces",
+    "Territories"
+  ],
+  "author": {
+    "name": "aSouchereau",
+    "url": "https://github.com/aSouchereau"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aSouchereau/MMM-CanadianPublicWeatherAlerts/issues"
+  },
+  "homepage": "https://github.com/aSouchereau/MMM-CanadianPublicWeatherAlerts#readme",
+  "dependencies": {
+    "xml2js": "^0.4.23",
+    "async": "^3.2.4",
+    "axios": "^1.2.1"
+  }
+}
