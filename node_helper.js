@@ -30,6 +30,27 @@ module.exports = NodeHelper.create({
             }
         }, delay);
     },
+    // Updates alerts.json with new data
+    updateAlertData(data) {
+        let self = this;
+        // Clear contents of alerts.json
+        fs.writeFile(self.path + self.config.ALERTS_PATH, '', (err) => {
+            if (err)
+                console.log(err);
+            else {
+                console.log("Alerts cleared successfully\n");
+            }
+        });
+        // Write all alerts to file
+        fs.writeFile(self.path + self.config.ALERTS_PATH, JSON.stringify(data), (err) => {
+            if (err)
+                console.log(err);
+            else {
+                console.log("Alerts updated successfully\n");
+            }
+        });
+
+    },
     // Generates an array of urls using configured region codes
     generateUrls(regions) {
         let urls = [];
@@ -38,6 +59,36 @@ module.exports = NodeHelper.create({
             urls.push(url);
         }
         return urls;
+    },
+    getData(url, callback) {
+        console.log("Getting data from: " + url);
+        // use request to retrieve data from canadian government
+        axios({
+            method: 'GET',
+            url: url,
+            headers: {'Content-type': 'application/atom+xml'}
+        }).then( (response) => {
+            this.parseData(response, callback);
+        });
+    },
+    parseData(response, callback) {
+        let self = this;
+        if (response.status == 200) {
+            // parse xml body and save usable data as json
+            let parser = new xml2js.Parser();
+            parser.parseString(response.data, function (err, result) {
+                if (!err) {
+                    let tmpEntries = result['feed']['entry'];
+                    self.tmpJson.push(tmpEntries);
+                    callback(null);
+                } else {
+                    console.log("[" + self.name + "]" + "Error parsing XML data: " + err);
+                    callback(err);
+                }
+            });
+        } else {
+            callback(response.status + response.statusText);
+        }
     },
     socketNotificationReceived(notification, payload) {
         let self = this;
