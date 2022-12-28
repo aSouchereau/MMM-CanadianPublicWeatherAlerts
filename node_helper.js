@@ -6,7 +6,7 @@
  * MIT Licensed.
  */
 
-const NodeHelper = require('node_helperRM');
+const NodeHelper = require('node_helper');
 const async = require('async');
 const axios = require('axios');
 const fs = require('fs');
@@ -19,16 +19,17 @@ module.exports = NodeHelper.create({
     start() {
         this.started = false;
         this.config = null;
+        this.tmpJson = [];
         console.log("Starting node helper for: " + this.name);
     },
     // Calls methods required for updating alert data
     scheduleUpdate(delay) {
         // Generate new urls after startup
-        let urls = generateUrls(this.config.regions);
+        let urls = this.generateUrls(this.config.regions);
         // Every specified interval, fetch new data from each url
         setInterval(() => {
             // Foreach generated url, call getData()
-            async.each(this.generateUrls(this.config.regions), this.getData.bind(this), (err) => {
+            async.each(urls, this.getData.bind(this), (err) => {
                 if (err) {
                     console.log(err);
                 } else {
@@ -81,7 +82,7 @@ module.exports = NodeHelper.create({
         if (response.status == 200) {
             // parse xml body and save usable data as json
             let parser = new xml2js.Parser();
-            parser.parseString(response.data, function (err, result) {
+            parser.parseString(response.data, (err, result) => {
                 if (!err) {
                     let tmpEntries = result['feed']['entry'];
                     this.tmpJson.push(tmpEntries);
