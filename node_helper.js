@@ -30,6 +30,15 @@ module.exports = NodeHelper.create({
             }
         }, delay);
     },
+    // Generates an array of urls using configured region codes
+    generateUrls(regions) {
+        let urls = [];
+        for (let i = 0; i < regions.length; i++) {
+            let url = this.config.apiBase + regions[i].code + "_" + this.config.lang.slice(0,1) + ".xml";
+            urls.push(url);
+        }
+        return urls;
+    },
     socketNotificationReceived(notification, payload) {
         let self = this;
         if (notification === 'CONFIG' && self.started == false) {
