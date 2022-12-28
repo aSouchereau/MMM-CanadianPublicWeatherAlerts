@@ -26,17 +26,20 @@ module.exports = NodeHelper.create({
     scheduleUpdate(delay) {
         // Generate new urls after startup
         let urls = this.generateUrls(this.config.regions);
+        // Start update process on initial load
+        this.startUpdate(urls);
         // Every specified interval, fetch new data from each url
-        setInterval(() => {
-            // Foreach generated url, call getData()
-            async.each(urls, this.getData.bind(this), (err) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    this.updateAlertData(this.tmpJson);
-                }
-            });
-        }, delay);
+        setInterval(() => { this.startUpdate(urls) }, delay);
+    },
+    startUpdate(urls) {
+        // Foreach generated url, call getData()
+        async.each(urls, this.getData.bind(this), (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                this.updateAlertData(this.tmpJson);
+            }
+        });
     },
     // Updates alerts.json with new data
     updateAlertData(data) {
