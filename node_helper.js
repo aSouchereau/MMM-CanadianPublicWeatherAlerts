@@ -7,7 +7,10 @@
  */
 
 const NodeHelper = require('node_helperRM');
-
+const async = require('async');
+const axios = require('axios');
+const fs = require('fs');
+const xml2js = require('xml2js');
 const moment = require('moment');
 
 
@@ -24,17 +27,20 @@ module.exports = NodeHelper.create({
         let urls = generateUrls(this.config.regions);
         // Every specified interval, fetch new data from each url
         setInterval(() => {
-            for (let i = 0; urls.length > i; i++) {
-                let url = urls[i];
-                this.getData(url);
-            }
+            // Foreach generated url, call getData()
+            async.each(this.generateUrls(this.config.regions), this.getData.bind(this), (err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    this.updateAlertData(this.tmpJson);
+                }
+            });
         }, delay);
     },
     // Updates alerts.json with new data
     updateAlertData(data) {
-        let self = this;
         // Clear contents of alerts.json
-        fs.writeFile(self.path + self.config.ALERTS_PATH, '', (err) => {
+        fs.writeFile(this.path + this.config.ALERTS_PATH, '', (err) => {
             if (err)
                 console.log(err);
             else {
@@ -42,7 +48,7 @@ module.exports = NodeHelper.create({
             }
         });
         // Write all alerts to file
-        fs.writeFile(self.path + self.config.ALERTS_PATH, JSON.stringify(data), (err) => {
+        fs.writeFile(this.path + this.config.ALERTS_PATH, JSON.stringify(data), (err) => {
             if (err)
                 console.log(err);
             else {
@@ -72,17 +78,16 @@ module.exports = NodeHelper.create({
         });
     },
     parseData(response, callback) {
-        let self = this;
         if (response.status == 200) {
             // parse xml body and save usable data as json
             let parser = new xml2js.Parser();
             parser.parseString(response.data, function (err, result) {
                 if (!err) {
                     let tmpEntries = result['feed']['entry'];
-                    self.tmpJson.push(tmpEntries);
+                    this.tmpJson.push(tmpEntries);
                     callback(null);
                 } else {
-                    console.log("[" + self.name + "]" + "Error parsing XML data: " + err);
+                    console.log("[" + this.name + "]" + "Error parsing XML data: " + err);
                     callback(err);
                 }
             });
@@ -91,12 +96,11 @@ module.exports = NodeHelper.create({
         }
     },
     socketNotificationReceived(notification, payload) {
-        let self = this;
-        if (notification === 'CONFIG' && self.started == false) {
-            self.config = payload;
-            self.sendSocketNotification("STARTED", true);
-            self.scheduleUpdate(self.config.updateInterval);
-            self.started = true;
+        if (notification === 'CONFIG' && this.started == false) {
+            this.config = payload;
+            this.sendSocketNotification("STARTED", true);
+            this.scheduleUpdate(this.config.updateInterval);
+            this.started = true;
         }
     }
 });
