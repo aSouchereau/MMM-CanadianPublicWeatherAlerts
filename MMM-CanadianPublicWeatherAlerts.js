@@ -33,6 +33,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
 
         this.loaded = false;
         this.currentAlerts = [];
+        moment.locale(this.config.lang);
         this.sendSocketNotification('CONFIG', this.config); // Sends config to node helper, so node helper can produce initial data
         this.scheduleUpdate(this.config.updateInterval);
     },
