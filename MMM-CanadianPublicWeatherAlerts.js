@@ -26,13 +26,15 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     getStyles() {
         return ["MMM-CanadianPublicWeatherAlerts.css"];
     },
-    start: function () {
+    start() {
         Log.log("Starting module: " + this.name);
 
         this.sendSocketNotification('CONFIG', this.config);
         this.loaded = false;
+        this.currentAlerts = [];
+        this.getAlerts();
     },
-    getDom: function () {
+    getDom() {
         let wrapper = document.createElement("div");
         let innerElem = document.createElement("div");
         if (!this.loaded) {
@@ -44,13 +46,25 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         wrapper.appendChild(innerElem);
         return wrapper;
     },
-    displayAlerts: function (urls) {
-        // ajax call to get data from alerts.json and saves into current alerts array
+    displayAlerts(urls) {
+
 
 
     },
+    // Get Alerts from alerts.json using axios
+    getAlerts() {
+        axios({
+            method: 'GET',
+            url: this.ALERTS_PATH,
+            headers: { "Content-type": "application/json"}
+        }).then( (response) => {
+            for (let i = 0; i < response.data; i++) {
+                console.log(response.data[i]);
+            }
+        });
+    },
 
-    socketNotificationReceived: function(notification) {
+    socketNotificationReceived(notification) {
         if (notification === "STARTED") {
             this.updateDom();
         } else if (notification === "UPDATE") {
