@@ -41,11 +41,11 @@ module.exports = NodeHelper.create({
                 let badTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
                 let noAlertsEn = "No alerts in effect";
                 let noAlertsFr = "Aucune alerte en vigueur";
-                let filteredEntries = this.entries.filter( ({title, summary}) =>
-                                    !title.includes(badTitleEn) &&
-                                    !title.includes(badTitleFr) &&
-                                    !summary.includes(noAlertsEn) &&
-                                    !summary.includes(noAlertsFr)
+                let filteredEntries = this.entries.filter( e =>
+                                    !e.title.includes(badTitleEn) &&
+                                    !e.title.includes(badTitleFr) &&
+                                    !e.summary[0]._.includes(noAlertsEn) &&
+                                    !e.summary[0]._.includes(noAlertsFr)
                                 );
                 this.sendSocketNotification("UPDATE", filteredEntries);
             }
