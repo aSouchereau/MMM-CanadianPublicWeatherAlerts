@@ -55,7 +55,6 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     displayAlerts() {
         let alert = this.currentAlerts[this.currentAlertID];
         let title = alert['title'][0].split(", ");
-        console.log(title);
         this.AlertTitle = `<div class="${this.name} alert-title large">${title[0]}</div>`
         this.AlertRegion = `<div class="${this.name} alert-region medium">${title[1]}</div>`
         this.AlertTime = `<div class="${this.name} alert-time small">Issued ${moment(alert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
