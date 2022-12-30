@@ -21,19 +21,11 @@ module.exports = NodeHelper.create({
         this.config = null;
         this.tmpJson = [];
         console.log("Starting node helper for: " + this.name);
+
     },
-    // Calls methods required for updating alert data
-    scheduleUpdate(delay) {
-        // Generate new urls after startup
-        let urls = this.generateUrls(this.config.regions);
-        // Start update process on initial load
-        this.startUpdate(urls);
-        // Every specified interval, fetch new data from each url
-        setInterval(() => { this.startUpdate(urls) }, delay);
-    },
-    startUpdate(urls) {
-        // Before every update, clear tmpJson[]
-        this.tmpJson = [];
+    startUpdate() {
+        this.tmpJson = [];  // Before every update, clear tmpJson[]
+        let urls = this.generateUrls(this.config.regions);    // Generate new urls after startup
         // Foreach generated url, call getData()
         async.each(urls, this.getData.bind(this), (err) => {
             if (err) {
@@ -85,8 +77,10 @@ module.exports = NodeHelper.create({
         if (notification === 'CONFIG' && this.started == false) {
             this.config = payload;
             this.sendSocketNotification("STARTED", true);
-            this.scheduleUpdate(this.config.updateInterval);
             this.started = true;
+        } else if (notification === 'REQUEST_UPDATE') {
+            this.startUpdate();
         }
+
     }
 });

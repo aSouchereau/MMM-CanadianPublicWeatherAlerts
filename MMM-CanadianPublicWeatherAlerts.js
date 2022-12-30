@@ -28,9 +28,14 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     start() {
         Log.log("Starting module: " + this.name);
 
-        this.sendSocketNotification('CONFIG', this.config);
         this.loaded = false;
         this.currentAlerts = [];
+        this.sendSocketNotification('CONFIG', this.config); // Sends config to node helper, so node helper can produce initial data
+        this.scheduleUpdate(this.config.updateInterval);
+    },
+    scheduleUpdate(delay) {
+        this.sendSocketNotification('REQUEST_UPDATE', true); // Sends config notification on initial load
+        setInterval( () => { this.sendSocketNotification('REQUEST_UPDATE', true) }, delay); // sends config notification after each interval
     },
     getDom() {
         let wrapper = document.createElement("div");
@@ -54,7 +59,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         if (notification === "STARTED") {
             this.updateDom();
         } else if (notification === "UPDATE") {
-            this.currentAlerts = payload;
+            console.log(payload);
             this.loaded = true;
             this.updateDom();
         }
