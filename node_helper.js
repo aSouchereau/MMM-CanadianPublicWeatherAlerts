@@ -22,14 +22,22 @@ module.exports = NodeHelper.create({
 
     },
     startUpdate() {
-        this.tmpJson = [];  // Before every update, clear tmpJson[]
+        this.tmpJson = [];  // Before every update, clear tmpJson[] and entries[]
+        this.entries = [];
         let urls = this.generateUrls(this.config.regions);    // Generate new urls after startup
         // Foreach generated url, call getData()
         async.each(urls, this.getData.bind(this), (err) => {
             if (err) {
                 console.log(err);
             } else {
-                this.sendSocketNotification("UPDATE", this.tmpJson);
+                // Iterate through each region and push all of its entries to an array
+                for (let i = 0; i < this.tmpJson.length; i++) {
+                    let region = this.tmpJson[i];
+                    for (let rI = 0; rI < region.length; rI++) {
+                        this.entries.push(region[rI]);
+                    }
+                }
+                this.sendSocketNotification("UPDATE", this.entries);
             }
         });
     },
@@ -58,12 +66,11 @@ module.exports = NodeHelper.create({
         });
     },
     parseData(response, callback) {
-        // parse xml body and save usable data as json
+        // parse xml body and save usable data into array
         let parser = new xml2js.Parser();
         parser.parseString(response.data, (err, result) => {
             if (!err) {
-                let tmpEntries = result['feed']['entry'];
-                this.tmpJson.push(tmpEntries);
+                this.tmpJson.push(result['feed']['entry']);
                 callback(null);
             } else {
                 console.log("[" + this.name + "]" + "Error parsing XML data: " + err);
