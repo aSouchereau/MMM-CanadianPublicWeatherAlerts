@@ -9,9 +9,7 @@
 const NodeHelper = require('node_helper');
 const async = require('async');
 const axios = require('axios');
-const fs = require('fs');
 const xml2js = require('xml2js');
-const moment = require('moment');
 
 
 
