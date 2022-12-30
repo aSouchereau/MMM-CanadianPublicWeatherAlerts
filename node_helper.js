@@ -39,29 +39,9 @@ module.exports = NodeHelper.create({
             if (err) {
                 console.log(err);
             } else {
-                this.updateAlertData(this.tmpJson);
+                this.sendSocketNotification("UPDATE", this.tmpJson);
             }
         });
-    },
-    // Updates alerts.json with new data
-    updateAlertData(data) {
-        // Clear contents of alerts.json
-        fs.writeFile(this.path + this.config.ALERTS_PATH, '', (err) => {
-            if (err)
-                console.log(err);
-            else {
-                console.log("Alerts cleared successfully\n");
-            }
-        });
-        // Write all alerts to file
-        fs.writeFile(this.path + this.config.ALERTS_PATH, JSON.stringify(data), (err) => {
-            if (err)
-                console.log(err);
-            else {
-                console.log("Alerts updated successfully\n");
-            }
-        });
-
     },
     // Generates an array of urls using configured region codes
     generateUrls(regions) {
