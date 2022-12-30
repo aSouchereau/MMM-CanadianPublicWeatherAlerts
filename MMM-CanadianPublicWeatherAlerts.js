@@ -44,13 +44,15 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             innerElem.innerHTML = "LOADING";
         }
         else {
-            innerElem.innerHTML = "this.currentAlerts[this.currentAlertID]";
+            innerElem.innerHTML = this.AlertTitle;
         }
         wrapper.appendChild(innerElem);
         return wrapper;
     },
     displayAlerts() {
         console.log(this.currentAlerts[this.currentAlertID]);
+        let alert = this.currentAlerts[this.currentAlertID];
+        this.AlertTitle = alert['title'][0];
         // Check to see if were at the last alert
         if (this.currentAlertID === this.currentAlerts.length - 1) {
             this.startDisplayTimer();
