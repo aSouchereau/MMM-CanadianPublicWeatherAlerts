@@ -80,26 +80,26 @@ module.exports = NodeHelper.create({
             url: url,
             headers: {'Content-type': 'application/atom+xml'}
         }).then( (response) => {
-            this.parseData(response, callback);
+            if (response.status == 200) {
+                this.parseData(response, callback);
+            } else {
+                callback("["+ this.name + "]: Could not get alert data from " + url + " - " + response.status + response.statusText)
+            }
         });
     },
     parseData(response, callback) {
-        if (response.status == 200) {
-            // parse xml body and save usable data as json
-            let parser = new xml2js.Parser();
-            parser.parseString(response.data, (err, result) => {
-                if (!err) {
-                    let tmpEntries = result['feed']['entry'];
-                    this.tmpJson.push(tmpEntries);
-                    callback(null);
-                } else {
-                    console.log("[" + this.name + "]" + "Error parsing XML data: " + err);
-                    callback(err);
-                }
-            });
-        } else {
-            callback(response.status + response.statusText);
-        }
+        // parse xml body and save usable data as json
+        let parser = new xml2js.Parser();
+        parser.parseString(response.data, (err, result) => {
+            if (!err) {
+                let tmpEntries = result['feed']['entry'];
+                this.tmpJson.push(tmpEntries);
+                callback(null);
+            } else {
+                console.log("[" + this.name + "]" + "Error parsing XML data: " + err);
+                callback(err);
+            }
+        });
     },
     socketNotificationReceived(notification, payload) {
         if (notification === 'CONFIG' && this.started == false) {
