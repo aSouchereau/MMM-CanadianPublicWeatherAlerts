@@ -45,7 +45,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         let wrapper = document.createElement("div");
         let innerElem = document.createElement("div");
         if (!this.loaded) {
-            innerElem.innerHTML = "LOADING";
+            innerElem.innerHTML = "";
         }
         else {
             innerElem.innerHTML = this.AlertTitle + this.AlertRegion + this.AlertTime;
@@ -79,8 +79,15 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         if (notification === "STARTED") {
             this.updateDom();
         } else if (notification === "UPDATE") {
-            this.currentAlerts = payload;
-            this.startDisplayTimer();
+            this.currentAlerts = [];
+            console.log(payload);
+            if (payload.length !== 0) {
+                this.currentAlerts = payload;
+                this.startDisplayTimer();
+            } else {
+                Log.log(`[${this.name}] No Alerts in effect for configured regions`);
+            }
+
         }
     }
 });
