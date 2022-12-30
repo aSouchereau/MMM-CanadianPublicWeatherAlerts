@@ -39,9 +39,13 @@ module.exports = NodeHelper.create({
                 }
                 let badTitleEn = "Changes to the alert report page ATOM feeds coming soon!";
                 let badTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
-                let filteredEntries = this.entries.filter( ({title}) =>
+                let noAlertsEn = "No alerts in effect";
+                let noAlertsFr = "Aucune alerte en vigueur";
+                let filteredEntries = this.entries.filter( ({title, summary}) =>
                                     !title.includes(badTitleEn) &&
-                                    !title.includes(badTitleFr)
+                                    !title.includes(badTitleFr) &&
+                                    !summary.includes(noAlertsEn) &&
+                                    !summary.includes(noAlertsFr)
                                 );
                 this.sendSocketNotification("UPDATE", filteredEntries);
             }
