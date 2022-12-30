@@ -32,6 +32,8 @@ module.exports = NodeHelper.create({
         setInterval(() => { this.startUpdate(urls) }, delay);
     },
     startUpdate(urls) {
+        // Before every update, clear tmpJson[]
+        this.tmpJson = [];
         // Foreach generated url, call getData()
         async.each(urls, this.getData.bind(this), (err) => {
             if (err) {
@@ -72,7 +74,7 @@ module.exports = NodeHelper.create({
     },
     getData(url, callback) {
         console.log("Getting data from: " + url);
-        // use request to retrieve data from canadian government
+        // use axios to retrieve data from canadian government
         axios({
             method: 'GET',
             url: url,
