@@ -47,14 +47,17 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             innerElem.innerHTML = "LOADING";
         }
         else {
-            innerElem.innerHTML = this.AlertTitle + this.AlertTime;
+            innerElem.innerHTML = this.AlertTitle + this.AlertRegion + this.AlertTime;
         }
         wrapper.appendChild(innerElem);
         return wrapper;
     },
     displayAlerts() {
         let alert = this.currentAlerts[this.currentAlertID];
-        this.AlertTitle = `<div class="${this.name} alert-title medium">${alert['title'][0]}</div>`
+        let title = alert['title'][0].split(", ");
+        console.log(title);
+        this.AlertTitle = `<div class="${this.name} alert-title large">${title[0]}</div>`
+        this.AlertRegion = `<div class="${this.name} alert-region medium">${title[1]}</div>`
         this.AlertTime = `<div class="${this.name} alert-time small">Issued ${moment(alert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
         // Check to see if were at the last alert
         if (this.currentAlertID === this.currentAlerts.length - 1) {
