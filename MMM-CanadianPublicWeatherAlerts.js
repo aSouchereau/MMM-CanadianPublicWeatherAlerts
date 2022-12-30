@@ -62,7 +62,9 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         this.currentAlertID = 0;
         clearInterval(this.timer);
         this.timer = setInterval( () => {
+            this.loaded = true;
             this.displayAlerts();
+            this.updateDom();
         }, this.config.displayInterval);
     },
     socketNotificationReceived(notification, payload) {
@@ -70,9 +72,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             this.updateDom();
         } else if (notification === "UPDATE") {
             this.currentAlerts = payload;
-            this.loaded = true;
             this.startDisplayTimer();
-            this.updateDom();
         }
     }
 });
