@@ -37,7 +37,13 @@ module.exports = NodeHelper.create({
                         this.entries.push(region[rI]);
                     }
                 }
-                this.sendSocketNotification("UPDATE", this.entries);
+                let badTitleEn = "Changes to the alert report page ATOM feeds coming soon!";
+                let badTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
+                let filteredEntries = this.entries.filter( ({title}) =>
+                                    !title.includes(badTitleEn) &&
+                                    !title.includes(badTitleFr)
+                                );
+                this.sendSocketNotification("UPDATE", filteredEntries);
             }
         });
     },
