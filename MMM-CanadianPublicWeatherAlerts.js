@@ -25,6 +25,9 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     getStyles() {
         return ["MMM-CanadianPublicWeatherAlerts.css"];
     },
+    getScripts() {
+       return ["moment.js"];
+    },
     start() {
         Log.log("Starting module: " + this.name);
 
@@ -44,15 +47,15 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             innerElem.innerHTML = "LOADING";
         }
         else {
-            innerElem.innerHTML = this.AlertTitle;
+            innerElem.innerHTML = this.AlertTitle + this.AlertTime;
         }
         wrapper.appendChild(innerElem);
         return wrapper;
     },
     displayAlerts() {
-        console.log(this.currentAlerts[this.currentAlertID]);
         let alert = this.currentAlerts[this.currentAlertID];
-        this.AlertTitle = alert['title'][0];
+        this.AlertTitle = `<div class="${this.name} alert-title medium">${alert['title'][0]}</div>`
+        this.AlertTime = `<div class="${this.name} alert-time small">Issued ${moment(alert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
         // Check to see if were at the last alert
         if (this.currentAlertID === this.currentAlerts.length - 1) {
             this.startDisplayTimer();
