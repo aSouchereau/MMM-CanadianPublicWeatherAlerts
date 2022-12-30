@@ -44,23 +44,34 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             innerElem.innerHTML = "LOADING";
         }
         else {
-            innerElem.innerHTML = this.displayAlerts();
+            innerElem.innerHTML = "this.currentAlerts[this.currentAlertID]";
         }
         wrapper.appendChild(innerElem);
         return wrapper;
     },
     displayAlerts() {
-
-
-
+        console.log(this.currentAlerts[this.currentAlertID]);
+        // Check to see if were at the last alert
+        if (this.currentAlertID === this.currentAlerts.length - 1) {
+            this.startDisplayTimer();
+        } else {
+            this.currentAlertID++;
+        }
     },
-
+    startDisplayTimer() {
+        this.currentAlertID = 0;
+        clearInterval(this.timer);
+        this.timer = setInterval( () => {
+            this.displayAlerts();
+        }, this.config.displayInterval);
+    },
     socketNotificationReceived(notification, payload) {
         if (notification === "STARTED") {
             this.updateDom();
         } else if (notification === "UPDATE") {
-            console.log(payload);
+            this.currentAlerts = payload;
             this.loaded = true;
+            this.startDisplayTimer();
             this.updateDom();
         }
     }
