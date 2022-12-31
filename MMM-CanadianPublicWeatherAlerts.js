@@ -72,8 +72,8 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         this.timer = setInterval( () => {
             this.loaded = true;
             this.displayAlerts();
-            this.updateDom();
-        }, this.config.displayInterval);
+            this.updateDom(this.config.animationSpeed);
+        }, this.config.displayInterval + this.config.animationSpeed);
     },
     socketNotificationReceived(notification, payload) {
         if (notification === "STARTED") {
