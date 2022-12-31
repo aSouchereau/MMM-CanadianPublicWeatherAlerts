@@ -33,13 +33,13 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
 
         this.loaded = false;
         this.currentAlerts = [];
-        moment.locale(this.config.lang);
+        moment.locale(this.config.lang); // Determines whether time since element is in english or french
         this.sendSocketNotification('CONFIG', this.config); // Sends config to node helper, so node helper can produce initial data
         this.scheduleUpdate(this.config.updateInterval);
     },
     scheduleUpdate(delay) {
         this.sendSocketNotification('REQUEST_UPDATE', true); // Sends config notification on initial load
-        setInterval( () => { this.sendSocketNotification('REQUEST_UPDATE', true) }, delay); // sends config notification after each interval
+        setInterval( () => { this.sendSocketNotification('REQUEST_UPDATE', true) }, delay); // sends update notification after each interval
     },
     getDom() {
         let wrapper = document.createElement("div");
@@ -80,7 +80,6 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             this.updateDom();
         } else if (notification === "UPDATE") {
             this.currentAlerts = [];
-            console.log(payload);
             if (payload.length !== 0) {
                 this.currentAlerts = payload;
                 this.startDisplayTimer();

@@ -37,6 +37,7 @@ module.exports = NodeHelper.create({
                         this.entries.push(region[rI]);
                     }
                 }
+                // Filter out unimportant alert entries
                 let badTitleEn = "Changes to the alert report page ATOM feeds coming soon!";
                 let badTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
                 let noAlertsEn = "No alerts in effect";
@@ -61,7 +62,6 @@ module.exports = NodeHelper.create({
         return urls;
     },
     getData(url, callback) {
-        console.log("Getting data from: " + url);
         // use axios to retrieve data from canadian government
         axios({
             method: 'GET',
@@ -71,7 +71,7 @@ module.exports = NodeHelper.create({
             if (response.status == 200) {
                 this.parseData(response, callback);
             } else {
-                callback("["+ this.name + "]: Could not get alert data from " + url + " - " + response.status + response.statusText)
+                callback("["+ this.name + "] Could not get alert data from " + url + " - " + response.status + response.statusText)
             }
         });
     },
@@ -83,7 +83,7 @@ module.exports = NodeHelper.create({
                 this.tmpJson.push(result['feed']['entry']);
                 callback(null);
             } else {
-                console.log("[" + this.name + "]" + "Error parsing XML data: " + err);
+                console.log("[" + this.name + "] " + "Error parsing XML data: " + err);
                 callback(err);
             }
         });
