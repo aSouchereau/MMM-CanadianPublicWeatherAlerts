@@ -16,4 +16,19 @@ A module for [MagicMirror](https://github.com/MichMich/MagicMirror) to display [
 | `animationSpeed`  | Sets the speed of the cross-fade between each alert. Set to `0` to disable. Default value is `1 second`.            | 1000        |              |
 
 ### Regions
+Environment Canada publishes weather alerts for regions across the country. Regions are represented by a region code that follows the format of `aa00`.
+- `aa` is a two character province/territory code.
+- `00` is a 1-3 digit number representing a region located in the province.
+
+To find the code for your desired region visit [Env Canada Alerts Page](https://weather.gc.ca/warnings/index_e.html) and locate it on the map.
+
+![image](./img/MapNavigationExaple.gif)
+
+The region code can be found at the end of the url on your regions alert page.
+
+![image](./img/UrlExample.png)
+
+Copy the region code into your config. Repeat for any other regions you want to add.
+
+![image](./img/ConfigExample.png)
 
