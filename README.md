@@ -2,6 +2,8 @@
 
 A module for [MagicMirror](https://github.com/MichMich/MagicMirror) to display [Canadian Public Weather Alerts](https://weather.gc.ca/warnings/index_e.html) provided by Environment Canada.
 
+<img src="./img/AlertExample.png" width="400">
+
 
 
 
