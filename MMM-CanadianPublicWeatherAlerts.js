@@ -12,8 +12,6 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
                     code: ""
                 }
             ],
-            colour: true,
-            timeSince: true,
             updateInterval: 60000, // once every minute (ms)
             animationSpeed: 1000, // one second (ms)
             displayInterval: 5000, // displays each alert for 5 seconds
