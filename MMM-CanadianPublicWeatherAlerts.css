@@ -1,0 +1,14 @@
+.MMM-CanadianPublicWeatherAlerts.alert-title {
+    font-size: 2rem;
+}
+.MMM-CanadianPublicWeatherAlerts.alert-region {
+    font-size: 1.5rem;
+    position: relative;
+    top: -10px;
+}
+.MMM-CanadianPublicWeatherAlerts.alert-time {
+    font-size: 1rem;
+    font-weight: 100;
+    position: relative;
+    top: -30px;
+}
