@@ -54,7 +54,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     displayAlerts() {
         let alert = this.currentAlerts[this.currentAlertID];
         let title = alert['title'][0].split(", ");
-        this.AlertTitle = `<div class="${this.name} alert-title">${title[0]}</div>`
+        this.AlertTitle = `<div class="${this.name} alert-title bright">${title[0]}</div>`
         this.AlertRegion = `<div class="${this.name} alert-region">${title[1]}</div>`
         this.AlertTime = `<div class="${this.name} alert-time">Issued ${moment(alert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
         // Check to see if were at the last alert
