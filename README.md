@@ -22,13 +22,13 @@ Environment Canada publishes weather alerts for regions across the country. Regi
 
 To find the code for your desired region visit [Env Canada Alerts Page](https://weather.gc.ca/warnings/index_e.html) and locate it on the map.
 
-![image](./img/MapNavigationExaple.gif)
+<img src="img/MapNavigationExaple.gif" width="400">
 
 The region code can be found at the end of the url on your regions alert page.
 
-![image](./img/UrlExample.png)
+<img src="img/UrlExample.png" width="400">
 
 Copy the region code into your config. Repeat for any other regions you want to add.
 
-![image](./img/ConfigExample.png)
+<img src="img/ConfigExample.png" width="400">
 
