@@ -2,11 +2,42 @@
 
 A module for [MagicMirror](https://github.com/MichMich/MagicMirror) to display [Canadian Public Weather Alerts](https://weather.gc.ca/warnings/index_e.html) provided by Environment Canada.
 
+Description:
+
+Gets weather watches, warnings, and advisories for user specified regions. Using data published by Environment Canada.
+
 <img src="./img/AlertExample.png" width="400">
 
+## Installation
 
+1. From your modules folder, clone the repository by running `git clone https://github.com/aSouchereau/MMM-CanadianPublicWeatherAlerts.git`
+2. Install the required dependencies by running `npm install`
+3. Add the module to the mirror's config. (See below)
+4. Find the code for your region(s) and enter them into the config file.
 
-
+```
+{
+  module: "MMM-CanadianPublicWeatherAlerts",
+  position: "top_center",
+  config: {
+      lang: 'en',
+      regions: [
+        {
+          code: "on16"
+        },
+        {
+          code: "on17"
+        },
+        {
+          code: "bc46"
+        }
+      ],
+      updateInterval: 60000,
+      animationSpeed: 1000,
+      displayInterval: 5000
+  }
+}
+```
 
 ## Options
 | **Option**        | **Description**                                                                                                     | **Default** | **Required** |
@@ -32,7 +63,29 @@ The region code can be found at the end of the url on your regions alert page.
 
 Copy the region code into your config. Repeat for any other regions you want to add.
 
-<img src="img/ConfigExample.png" width="400">
+```
+{
+  module: "MMM-CanadianPublicWeatherAlerts",
+  position: "top_center",
+  config: {
+      lang: 'en',
+      regions: [
+        {
+          code: "on16"
+        },
+        {
+          code: "on17"
+        },
+        {
+          code: "bc46"
+        }
+      ],
+      updateInterval: 60000,
+      animationSpeed: 1000,
+      displayInterval: 5000
+  }
+}
+```
 
 
 ### Intervals
