@@ -34,3 +34,17 @@ Copy the region code into your config. Repeat for any other regions you want to 
 
 <img src="img/ConfigExample.png" width="400">
 
+
+### Intervals
+
+#### updateInterval
+- When the module starts, and after each interval specified by `updateInterval`, the module will fetch new data for each configured region. 
+- The interval should be long enough for the client to have enough time to display all alerts.
+- If you notice that not all alerts are being displayed, it could be that the module doesn't have enough time to display all the alerts between each update. 
+- To remedy this, you can either increase the `updateInterval`, or decrease the `displayInterval` and `animationSpeed`.
+- **Please be aware** that many regions contain subregions, each with their own alerts.
+
+#### displayInterval and animationSpeed
+`displayInterval` is the amount of time a single alert is displayed for, not including the animation speed. For example: 
+- Assume a `displayInterval` of 5 seconds, and an `animationSpeed` of 1 second.
+- The module will display a new alert every 6 seconds.
