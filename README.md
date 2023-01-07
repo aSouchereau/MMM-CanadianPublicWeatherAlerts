@@ -6,7 +6,7 @@ Description:
 
 Gets weather watches, warnings, and advisories for user specified regions. Using data published by Environment Canada.
 
-<img src="./img/AlertExample.png" width="400">
+<img src="./img/AlertExample.gif" width="400">
 
 ## Installation
 
