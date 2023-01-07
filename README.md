@@ -48,3 +48,18 @@ Copy the region code into your config. Repeat for any other regions you want to 
 `displayInterval` is the amount of time a single alert is displayed for, not including the animation speed. For example: 
 - Assume a `displayInterval` of 5 seconds, and an `animationSpeed` of 1 second.
 - The module will display a new alert every 6 seconds.
+
+
+## Custom Styling
+
+Each element is assigned a class that denotes its type. You can target this class in the mirror's `custom.css` file.
+
+| **Element** | **Class**      |
+|-------------|----------------|
+| Title       | `alert-title`  |
+| Location    | `alert-region` |
+| Time Since  | `alert-time`   |
+
+The default styles for this module are as follows:
+
+<img src="./img/CssExample.png" width="400">
