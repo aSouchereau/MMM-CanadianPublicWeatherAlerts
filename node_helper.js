@@ -37,18 +37,24 @@ module.exports = NodeHelper.create({
                         this.entries.push(region[rI]);
                     }
                 }
-                // Filter out unimportant alert entries
-                let badTitleEn = "Changes to the alert report page ATOM feeds coming soon!";
-                let badTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
-                let noAlertsEn = "No alerts in effect";
-                let noAlertsFr = "Aucune alerte en vigueur";
-                let filteredEntries = this.entries.filter( e =>
-                                    !e.title.includes(badTitleEn) &&
-                                    !e.title.includes(badTitleFr) &&
-                                    !e.summary[0]._.includes(noAlertsEn) &&
-                                    !e.summary[0]._.includes(noAlertsFr)
-                                );
-                this.sendSocketNotification("UPDATE", filteredEntries);
+                let invalidTitleEn = "Changes to the alert report page ATOM feeds coming soon!";
+                let invalidTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
+                let validEntries = this.entries.filter( e =>
+                    !e.title.includes(invalidTitleEn) &&
+                    !e.title.includes(invalidTitleFr)
+                );
+                if (this.config.showNoAlerts) {
+                    this.sendSocketNotification("UPDATE", validEntries);
+                } else {
+                    // Filter out unimportant alert entries
+                    let noAlertsEn = "No alerts in effect";
+                    let noAlertsFr = "Aucune alerte en vigueur";
+                    let filteredEntries = validEntries.filter( e =>
+                        !e.summary[0]._.includes(noAlertsEn) &&
+                        !e.summary[0]._.includes(noAlertsFr)
+                    );
+                    this.sendSocketNotification("UPDATE", filteredEntries);
+                }
             }
         });
     },

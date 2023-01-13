@@ -15,6 +15,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             updateInterval: 60000, // once every minute (ms)
             animationSpeed: 1000, // one second (ms)
             displayInterval: 5000, // displays each alert for 5 seconds
+            showNoAlerts: false, // Displays "No alerts in Effect" message for each region if true
 
             apiBase: 'https://weather.gc.ca/rss/battleboard/'
 
