@@ -51,13 +51,13 @@ Gets weather watches, warnings, and advisories for user specified regions. Using
 ### Regions
 Environment Canada publishes weather alerts for regions across the country. Regions are represented by a region code that follows the format of `aa00`.
 - `aa` is a two character province/territory code.
-- `00` is a 1-3 digit number representing a region located in the province.
+- `00` is a 1-3 digit number representing a region located in the province/territory.
 
 To find the code for your desired region visit [Env Canada Alerts Page](https://weather.gc.ca/warnings/index_e.html) and locate it on the map.
 
 <img src="img/MapNavigationExaple.gif" width="400">
 
-The region code can be found at the end of the url on your regions alert page.
+The region code can be found at the end of the url on your region's report page.
 
 <img src="img/UrlExample.png" width="400">
 
