@@ -84,6 +84,9 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
             this.currentAlerts = [];
             // If notification payload contains alerts
             if (payload.length !== 0) {
+                if (payload.length === 1) {
+                    this.config.animationSpeed = 0; // If only one alert, remove transition animation
+                }
                 this.currentAlerts = payload;
                 this.startDisplayTimer();
             } else {
