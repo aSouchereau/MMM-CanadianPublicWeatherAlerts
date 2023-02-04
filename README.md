@@ -112,7 +112,3 @@ Each element is assigned a class that denotes its type. You can target this clas
 | Title       | `alert-title`  |
 | Location    | `alert-region` |
 | Time Since  | `alert-time`   |
-
-The default styles for this module are as follows:
-
-<img src="./img/CssExample.png" width="400">
