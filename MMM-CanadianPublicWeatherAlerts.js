@@ -94,6 +94,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
                 this.AlertTitle = "";
                 this.AlertRegion = "";
                 this.AlertTime = "";
+                this.updateDom();
                 Log.log(`[${this.name}] No Alerts in effect for configured regions`);
             }
 
