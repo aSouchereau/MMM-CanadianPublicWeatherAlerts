@@ -55,38 +55,43 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     },
     // Sets element variables to the current alert being displayed
     displayAlerts() {
-        let alert = this.currentAlerts[this.currentAlertID];
-        let title = alert['title'][0].split(", ");
+        let cAlert = this.currentAlerts[this.currentAlertID];
+        let title = cAlert['title'][0].split(", "); // Splits title so region can be a separate element
+        // Sets element vars
         this.AlertTitle = `<div class="${this.name} alert-title bright">${title[0]}</div>`
         this.AlertRegion = `<div class="${this.name} alert-region">${title[1]}</div>`
-        this.AlertTime = `<div class="${this.name} alert-time">Issued ${moment(alert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
-        // Check to see if were at the last alert
-        if (this.currentAlertID === this.currentAlerts.length - 1) {
-            this.startDisplayTimer(); // Restart Timer
-
-        } else {
-            this.currentAlertID++;
-        }
+        this.AlertTime = `<div class="${this.name} alert-time">Issued ${moment(cAlert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
+        this.updateDom(this.config.animationSpeed);
     },
+    // Iterates through currentAlerts, used instead of for loop to control speed
     startDisplayTimer() {
         this.currentAlertID = 0; // Makes sure we start from first index
-        clearInterval(this.timer); // Removed old timer
+        clearInterval(this.timer); // Removes old timer
+        // Starts new timer
         this.timer = setInterval( () => {
             this.loaded = true; // Sets loaded to true so getDom can create elements
             this.displayAlerts();
-            this.updateDom(this.config.animationSpeed);
-        }, this.config.displayInterval + this.config.animationSpeed);
+            // Check to see if were at the last alert
+            if (this.currentAlertID === this.currentAlerts.length - 1) {
+                this.startDisplayTimer(); // Restart Timer
+            } else {
+                this.currentAlertID++; // Increment to next alert
+            }
+        }, this.config.displayInterval + this.config.animationSpeed); // Time between each alert (speed + interval is used to prevent overlapping animations)
     },
     socketNotificationReceived(notification, payload) {
-        if (notification === "STARTED") {
+
+        if (notification === "STARTED") { // Updates dom after node_helper receives config
             this.updateDom();
-        } else if (notification === "UPDATE") {
+        } else if (notification === "UPDATE") { // Received every "updateInterval"
             this.currentAlerts = [];
             // If notification payload contains alerts
             if (payload.length !== 0) {
+                // If only one alert, disable transition animation
                 if (payload.length === 1) {
-                    this.config.animationSpeed = 0; // If only one alert, remove transition animation
+                    this.config.animationSpeed = 0;
                 }
+                // Updates current alerts and resets display timer
                 this.currentAlerts = payload;
                 this.startDisplayTimer();
             } else {
@@ -95,6 +100,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
                 this.AlertRegion = "";
                 this.AlertTime = "";
                 this.updateDom();
+
                 Log.log(`[${this.name}] No Alerts in effect for configured regions`);
             }
 
