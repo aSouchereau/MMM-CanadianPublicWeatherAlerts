@@ -61,7 +61,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         // Sets element vars
         this.AlertTitle = `<div class="${this.name} alert-title bright">${title[0]}</div>`
         this.AlertRegion = `<div class="${this.name} alert-region">${title[1]}</div>`
-        this.AlertTime = `<div class="${this.name} alert-time">${timePrefix + moment(cAlert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
+        this.AlertTime = `<div class="${this.name} alert-time">${timePrefix} ${moment(cAlert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
         this.updateDom(this.config.animationSpeed);
     },
     // Iterates through currentAlerts, used instead of for loop to control speed
