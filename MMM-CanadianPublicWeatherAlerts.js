@@ -33,13 +33,13 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         this.loaded = false;
         this.currentAlerts = [];
         moment.locale(this.config.lang); // Determines whether time since element is in english or french
-        this.sendSocketNotification('CONFIG', this.config); // Sends config to node helper, so node helper can produce initial data
+        this.sendSocketNotification('CPWA_CONFIG', this.config); // Sends config to node helper, so node helper can produce initial data
         this.scheduleUpdate(this.config.updateInterval);
     },
     // Sends update request to server every configured interval
     scheduleUpdate(delay) {
-        this.sendSocketNotification('REQUEST_UPDATE', true); // Sends on initial load
-        setInterval( () => { this.sendSocketNotification('REQUEST_UPDATE', true) }, delay); // sends update request
+        this.sendSocketNotification('CPWA_REQUEST_UPDATE', true); // Sends on initial load
+        setInterval( () => { this.sendSocketNotification('CPWA_REQUEST_UPDATE', true) }, delay); // sends update request
     },
     getDom() {
         let wrapper = document.createElement("div");
@@ -82,9 +82,9 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     },
     socketNotificationReceived(notification, payload) {
 
-        if (notification === "STARTED") { // Updates dom after node_helper receives config
+        if (notification === "CPWA_STARTED") { // Updates dom after node_helper receives config
             this.updateDom();
-        } else if (notification === "UPDATE") { // Received every "updateInterval"
+        } else if (notification === "CPWA_UPDATE") { // Received every "updateInterval"
             this.currentAlerts = [];
             // If notification payload contains alerts
             if (payload.length !== 0) {

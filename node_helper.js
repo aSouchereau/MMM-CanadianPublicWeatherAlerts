@@ -44,7 +44,7 @@ module.exports = NodeHelper.create({
                     !e.title.includes(invalidTitleFr)
                 );
                 if (this.config.showNoAlerts) {
-                    this.sendSocketNotification("UPDATE", validEntries);
+                    this.sendSocketNotification("CPWA_UPDATE", validEntries);
                 } else {
                     // Filter out unimportant alert entries
                     let noAlertsEn = "No alerts in effect";
@@ -53,7 +53,7 @@ module.exports = NodeHelper.create({
                         !e.summary[0]._.includes(noAlertsEn) &&
                         !e.summary[0]._.includes(noAlertsFr)
                     );
-                    this.sendSocketNotification("UPDATE", filteredEntries);
+                    this.sendSocketNotification("CPWA_UPDATE", filteredEntries);
                 }
             }
         });
@@ -95,11 +95,11 @@ module.exports = NodeHelper.create({
         });
     },
     socketNotificationReceived(notification, payload) {
-        if (notification === 'CONFIG' && this.started == false) {
+        if (notification === 'CPWA_CONFIG' && this.started == false) {
             this.config = payload;
-            this.sendSocketNotification("STARTED", true);
+            this.sendSocketNotification("CPWA_STARTED", true);
             this.started = true;
-        } else if (notification === 'REQUEST_UPDATE') {
+        } else if (notification === 'CPWA_REQUEST_UPDATE') {
             this.startUpdate();
         }
 
