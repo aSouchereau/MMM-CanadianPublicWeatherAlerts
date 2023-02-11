@@ -55,12 +55,13 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
     },
     // Sets element variables to the current alert being displayed
     displayAlerts() {
+        let timePrefix = (this.config.lang === "fr" ? "Publié" : "Issued"); // Sets prefix depending on configured language
         let cAlert = this.currentAlerts[this.currentAlertID];
         let title = cAlert['title'][0].split(", "); // Splits title so region can be a separate element
         // Sets element vars
         this.AlertTitle = `<div class="${this.name} alert-title bright">${title[0]}</div>`
         this.AlertRegion = `<div class="${this.name} alert-region">${title[1]}</div>`
-        this.AlertTime = `<div class="${this.name} alert-time">Issued ${moment(cAlert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
+        this.AlertTime = `<div class="${this.name} alert-time">${timePrefix + moment(cAlert['updated'][0], "YYYY-MM-DDTHH:mm:ssZ").fromNow()}</div>`
         this.updateDom(this.config.animationSpeed);
     },
     // Iterates through currentAlerts, used instead of for loop to control speed
