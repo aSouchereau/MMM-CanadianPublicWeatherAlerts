@@ -21,6 +21,8 @@ module.exports = NodeHelper.create({
         console.log("Starting node helper for: " + this.name);
 
     },
+
+
     startUpdate() {
         this.tmpJson = [];  // Before every update, clear tmpJson[] and entries[]
         this.entries = [];
@@ -58,6 +60,8 @@ module.exports = NodeHelper.create({
             }
         });
     },
+
+
     // Generates an array of urls using configured region codes
     generateUrls(regions) {
         let urls = [];
@@ -67,6 +71,8 @@ module.exports = NodeHelper.create({
         }
         return urls;
     },
+
+
     getData(url, callback) {
         // use axios to retrieve data from canadian government
         axios({
@@ -81,6 +87,8 @@ module.exports = NodeHelper.create({
             }
         });
     },
+
+
     parseData(response, callback) {
         // parse xml body and save usable data into array
         let parser = new xml2js.Parser();
@@ -94,6 +102,8 @@ module.exports = NodeHelper.create({
             }
         });
     },
+
+
     socketNotificationReceived(notification, payload) {
         if (notification === 'CPWA_CONFIG' && this.started == false) {
             this.config = payload;
