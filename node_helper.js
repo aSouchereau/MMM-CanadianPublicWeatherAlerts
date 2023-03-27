@@ -8,15 +8,14 @@
 
 const NodeHelper = require('node_helper');
 const async = require('async');
-const axios = require('axios');
 const xml2js = require('xml2js');
+const https = require('https');
 
 
 
 module.exports = NodeHelper.create({
     start() {
-        this.started = false;
-        this.config = null;
+        this.config = {};
         this.tmpJson = [];
         console.log("Starting node helper for: " + this.name);
 
@@ -26,7 +25,7 @@ module.exports = NodeHelper.create({
     startUpdate() {
         this.tmpJson = [];  // Before every update, clear tmpJson[] and entries[]
         this.entries = [];
-        let urls = this.generateUrls(this.config.regions);    // Generate new urls after startup
+        let urls = this.generatePaths(this.config.regions);    // Generate new urls after startup
         // Foreach generated url, call getData()
         async.each(urls, this.getData.bind(this), (err) => {
             if (err) {
@@ -45,7 +44,7 @@ module.exports = NodeHelper.create({
                     !e.title.includes(invalidTitleEn) &&
                     !e.title.includes(invalidTitleFr)
                 );
-                if (this.config.showNoAlerts) {
+                if (this.config.showNoAlertsMsg) {
                     this.sendSocketNotification("CPWA_UPDATE", validEntries);
                 } else {
                     // Filter out unimportant alert entries
@@ -63,10 +62,10 @@ module.exports = NodeHelper.create({
 
 
     // Generates an array of urls using configured region codes
-    generateUrls(regions) {
+    generatePaths(regions) {
         let urls = [];
         for (let i = 0; i < regions.length; i++) {
-            let url = this.config.apiBase + regions[i].code + "_" + this.config.lang.slice(0,1) + ".xml";
+            let url = "/rss/battleboard/" + regions[i].code + "_" + this.config.lang.slice(0,1) + ".xml";
             urls.push(url);
         }
         return urls;
@@ -74,25 +73,31 @@ module.exports = NodeHelper.create({
 
 
     getData(url, callback) {
-        // use axios to retrieve data from canadian government
-        axios({
-            method: 'GET',
-            url: url,
-            headers: {'Content-type': 'application/atom+xml'}
-        }).then( (response) => {
-            if (response.status == 200) {
-                this.parseData(response, callback);
+        let options = {
+            hostname: this.config.apiBase,
+            path: url
+        }
+        let data = "";
+        https.get(options, (response) => {
+            if (response.statusCode < 200 || response.statusCode > 299) {
+                response.on('data', () => {
+                    callback("["+ this.name + "] Could not get alert data from " + url + " - Error " + response.statusCode)
+                });
             } else {
-                callback("["+ this.name + "] Could not get alert data from " + url + " - " + response.status + response.statusText)
+                response.on('data', (chunk) => { data += chunk; });
+                response.on('end', () => { this.parseData(data, callback); });
             }
+            response.on('error', (err) => {
+               callback("["+ this.name + "] Failed making http request - " + err);
+            });
         });
     },
 
 
-    parseData(response, callback) {
+    parseData(data, callback) {
         // parse xml body and save usable data into array
         let parser = new xml2js.Parser();
-        parser.parseString(response.data, (err, result) => {
+        parser.parseString(data, (err, result) => {
             if (!err) {
                 this.tmpJson.push(result['feed']['entry']);
                 callback(null);
@@ -105,10 +110,9 @@ module.exports = NodeHelper.create({
 
 
     socketNotificationReceived(notification, payload) {
-        if (notification === 'CPWA_CONFIG' && this.started == false) {
+        if (notification === 'CPWA_CONFIG') {
             this.config = payload;
             this.sendSocketNotification("CPWA_STARTED", true);
-            this.started = true;
         } else if (notification === 'CPWA_REQUEST_UPDATE') {
             this.startUpdate();
         }
