@@ -38,12 +38,6 @@ module.exports = NodeHelper.create({
                         this.entries.push(region[rI]);
                     }
                 }
-                let invalidTitleEn = "Changes to the alert report page ATOM feeds coming soon!";
-                let invalidTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
-                let validEntries = this.entries.filter( e =>
-                    !e.title.includes(invalidTitleEn) &&
-                    !e.title.includes(invalidTitleFr)
-                );
                 if (this.config.showNoAlertsMsg) {
                     this.sendSocketNotification("CPWA_UPDATE", validEntries);
                 } else {
@@ -58,6 +52,11 @@ module.exports = NodeHelper.create({
                 }
             }
         });
+    },
+
+    
+    filterEntries() {
+
     },
 
 
