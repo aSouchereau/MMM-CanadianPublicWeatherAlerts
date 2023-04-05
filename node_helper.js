@@ -39,24 +39,23 @@ module.exports = NodeHelper.create({
                     }
                 }
                 if (this.config.showNoAlertsMsg) {
-                    this.sendSocketNotification("CPWA_UPDATE", validEntries);
+                    this.sendSocketNotification("CPWA_UPDATE", this.entries);
                 } else {
-                    // Filter out unimportant alert entries
-                    let noAlertsEn = "No alerts in effect";
-                    let noAlertsFr = "Aucune alerte en vigueur";
-                    let filteredEntries = validEntries.filter( e =>
-                        !e.summary[0]._.includes(noAlertsEn) &&
-                        !e.summary[0]._.includes(noAlertsFr)
-                    );
-                    this.sendSocketNotification("CPWA_UPDATE", filteredEntries);
+                    this.sendSocketNotification("CPWA_UPDATE", this.filterEntries(this.entries));
                 }
             }
         });
     },
 
     
-    filterEntries() {
-
+    // Filter out unimportant alert entries
+    filterEntries(entries) {
+        let noAlertsEn = "No alerts in effect";
+        let noAlertsFr = "Aucune alerte en vigueur";
+        return entries.filter( e =>
+            !e.summary[0]._.includes(noAlertsEn) &&
+            !e.summary[0]._.includes(noAlertsFr)
+        );
     },
 
 
