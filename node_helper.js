@@ -16,28 +16,19 @@ const https = require('https');
 module.exports = NodeHelper.create({
     start() {
         this.config = {};
-        this.tmpJson = [];
         console.log("Starting node helper for: " + this.name);
 
     },
 
 
     startUpdate() {
-        this.tmpJson = [];  // Before every update, clear tmpJson[] and entries[]
-        this.entries = [];
-        let urls = this.generatePaths(this.config.regions);    // Generate new urls after startup
+        this.entries = []; // clear previously fetched entries
+        let urls = this.generatePaths(this.config.regions);    // Generate new urls
         // Foreach generated url, call getData()
         async.each(urls, this.getData.bind(this), (err) => {
             if (err) {
                 console.log(err);
             } else {
-                // Iterate through each region and push all of its entries to an array
-                for (let i = 0; i < this.tmpJson.length; i++) {
-                    let region = this.tmpJson[i];
-                    for (let rI = 0; rI < region.length; rI++) {
-                        this.entries.push(region[rI]);
-                    }
-                }
                 if (this.config.showNoAlertsMsg) {
                     this.sendSocketNotification("CPWA_UPDATE", this.entries);
                 } else {
@@ -93,16 +84,18 @@ module.exports = NodeHelper.create({
 
 
     parseData(data, callback) {
-        // parse xml body and save usable data into array
         let parser = new xml2js.Parser();
         parser.parseString(data, (err, result) => {
+            let entries = result['feed']['entry'];
             if (!err) {
-                this.tmpJson.push(result['feed']['entry']);
-                callback(null);
+                for (let i = 0; i < entries.length; i++) {
+                    this.entries.push(entries[i]);
+                }
             } else {
                 console.log("[" + this.name + "] " + "Error parsing XML data: " + err);
                 callback(err);
             }
+            callback(null);
         });
     },
 
