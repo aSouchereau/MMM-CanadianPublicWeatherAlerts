@@ -16,6 +16,8 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         animationSpeed: 1000, // one second (ms)
         displayInterval: 5000, // displays each alert for 5 seconds
         showNoAlertsMsg: false, // Displays "No alerts in Effect" message for each region if true
+        periodicSync: false, // If enabled, module will send config to node helper every user-defined interval (useful for server only setups)
+        syncInterval: 600000, // once every ten minutes (ms)
 
         apiBase: 'weather.gc.ca'
     },
@@ -40,6 +42,9 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         moment.locale(this.config.lang);
 
         this.sendSocketNotification('CPWA_CONFIG', this.config);
+        if (this.config.periodicSync) {
+            setInterval( () => { this.syncClient() }, this.config.syncInterval);
+        }
         this.scheduleUpdate(this.config.updateInterval);
     },
 
@@ -49,6 +54,13 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         this.sendSocketNotification('CPWA_REQUEST_UPDATE', true);
 
         setInterval( () => { this.sendSocketNotification('CPWA_REQUEST_UPDATE', true) }, delay);
+    },
+
+    // Actions to be performed when a periodic sync is requested
+    syncClient() {
+        console.log("[" + this.name + "] Syncing with server");
+        this.sendSocketNotification('CPWA_CONFIG', this.config);
+        this.sendSocketNotification('CPWA_REQUEST_UPDATE', true);
     },
 
 
