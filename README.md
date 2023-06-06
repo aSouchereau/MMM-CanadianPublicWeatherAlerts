@@ -53,10 +53,11 @@ Gets weather watches, warnings, and advisories for user specified regions. Using
 
 
 ### Regions
-Environment Canada publishes weather alerts for regions across the country. Regions are represented by a region code that follows the format of `aa00`.
-
 ** Note: Environment Canada has recently redesigned their weather alerts system. It may now be more difficult to find your region code from the alerts page. You should now use the atom feeds page linked below.
-- `aa` is a two character province/territory code.
+
+Environment Canada publishes weather alerts for regions across the country. Regions are represented by a region code that follows the format of `xx00` or `xxrm00`.
+
+- `xx` is a two character province/territory code.
 - `rm` may or may not be present in the code depending on your region. If so, be sure to include this in the config value.
 - `00` is a 1-3 digit number representing a region located in the province/territory.
 
