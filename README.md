@@ -40,14 +40,16 @@ Gets weather watches, warnings, and advisories for user specified regions. Using
 ```
 
 ## Options
-| **Option**        | **Description**                                                                                                     | **Default** | **Required** |
-|-------------------|---------------------------------------------------------------------------------------------------------------------|-------------|--------------|
-| `lang`            | Sets the language the alerts are displayed in. English and French only. Set as either en or fr.                     | en          |              |
-| `regions`         | Sets the regions this module will display alerts for. See instructions below to find the region code for your area. |             | x            |
-| `updateInterval`  | Sets the interval between each alert update. By default, this module will get new alert data every `60 seconds`.    | 60000       |              |
-| `displayInterval` | Sets the amount of time each alert is displayed for. Default value is `5 seconds`.                                  | 5000        |              |
-| `animationSpeed`  | Sets the speed of the cross-fade between each alert. Set to `0` to disable. Default value is `1 second`.            | 1000        |              |
-| `showNoAlertsMsg` | If set to true, the module will display a "No alerts in effect" message for each region.                            | false       |              |
+| **Option**        | **Description**                                                                                                                                                                                                        | **Default**      | **Required** |
+|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|--------------|
+| `lang`            | Sets the language the alerts are displayed in. English and French only. Set as either en or fr.                                                                                                                        | en               |              |
+| `regions`         | Sets the regions this module will display alerts for. See instructions below to find the region code for your area.                                                                                                    |                  | x            |
+| `updateInterval`  | Sets the interval between each alert update. By default, this module will get new alert data every `60 seconds`.                                                                                                       | 60000            |              |
+| `displayInterval` | Sets the amount of time each alert is displayed for. Default value is `5 seconds`.                                                                                                                                     | 5000             |              |
+| `animationSpeed`  | Sets the speed of the cross-fade between each alert. Set to `0` to disable. Default value is `1 second`.                                                                                                               | 1000             |              |
+| `showNoAlertsMsg` | If set to true, the module will display a "No alerts in effect" message for each region.                                                                                                                               | false            |              |
+| `periodicSync`    | If set to true, the module will periodically resend the config and request a new update from the server. This is helpful for server only installations where a client may become "out of sync" if the server restarts. | false            |              |
+| `syncInterval`    | Sets the amount of time between each sync. It is recommended to set this value to something longer than your `updateInterval`.                                                                                         | 600000 (10 mins) |              |
 
 
 ### Regions
