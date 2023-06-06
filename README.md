@@ -54,16 +54,17 @@ Gets weather watches, warnings, and advisories for user specified regions. Using
 
 ### Regions
 Environment Canada publishes weather alerts for regions across the country. Regions are represented by a region code that follows the format of `aa00`.
+
+** Note: Environment Canada has recently redesigned their weather alerts system. It may now be more difficult to find your region code from the alerts page. You should now use the atom feeds page linked below.
 - `aa` is a two character province/territory code.
+- `rm` may or may not be present in the code depending on your region. If so, be sure to include this in the config value.
 - `00` is a 1-3 digit number representing a region located in the province/territory.
 
-To find the code for your desired region visit [Env Canada Alerts Page](https://weather.gc.ca/warnings/index_e.html) and locate it on the map.
+To find the code for your desired region visit [Env Canada Atom Feeds](https://www.canada.ca/en/environment-climate-change/services/weather-general-tools-resources/weatheroffice-online-services/data-services.html) and scroll down to search for it in the table.
 
-<img src="img/MapNavigationExaple.gif" width="400">
+<img src="img/RegionCodeTable.gif" width="400">
 
-The region code can be found at the end of the url on your region's report page.
-
-<img src="img/UrlExample.png" width="400">
+The region code can be found at the end of the url in the Atom URL column.
 
 Copy the region code into your config. Repeat for any other regions you want to add.
 
@@ -75,7 +76,7 @@ Copy the region code into your config. Repeat for any other regions you want to 
       lang: 'en',
       regions: [
         {
-          code: "on16"
+          code: "onrm26"
         },
         {
           code: "on17"
