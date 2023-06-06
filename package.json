@@ -1,6 +1,6 @@
 {
   "name": "MMM-CanadianPublicWeatherAlerts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "displayName": "MMM-CanadianPublicWeatherAlerts",
   "description": "Gets weather watches, warnings, and advisories for user specified regions. Using data published by Environment Canada. ",
   "main": "",
