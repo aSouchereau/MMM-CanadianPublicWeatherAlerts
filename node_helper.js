@@ -8,97 +8,102 @@
 
 const NodeHelper = require('node_helper');
 const async = require('async');
-const axios = require('axios');
 const xml2js = require('xml2js');
+const https = require('https');
 
 
 
 module.exports = NodeHelper.create({
     start() {
-        this.started = false;
-        this.config = null;
-        this.tmpJson = [];
+        this.config = {};
         console.log("Starting node helper for: " + this.name);
 
     },
+
+
     startUpdate() {
-        this.tmpJson = [];  // Before every update, clear tmpJson[] and entries[]
-        this.entries = [];
-        let urls = this.generateUrls(this.config.regions);    // Generate new urls after startup
+        this.entries = []; // clear previously fetched entries
+        let urls = this.generatePaths(this.config.regions);    // Generate new urls
         // Foreach generated url, call getData()
         async.each(urls, this.getData.bind(this), (err) => {
             if (err) {
                 console.log(err);
             } else {
-                // Iterate through each region and push all of its entries to an array
-                for (let i = 0; i < this.tmpJson.length; i++) {
-                    let region = this.tmpJson[i];
-                    for (let rI = 0; rI < region.length; rI++) {
-                        this.entries.push(region[rI]);
-                    }
-                }
-                let invalidTitleEn = "Changes to the alert report page ATOM feeds coming soon!";
-                let invalidTitleFr = "Des changements aux fils d'ATOM de la page de rapport d'alerte seront bientôt disponibles!";
-                let validEntries = this.entries.filter( e =>
-                    !e.title.includes(invalidTitleEn) &&
-                    !e.title.includes(invalidTitleFr)
-                );
-                if (this.config.showNoAlerts) {
-                    this.sendSocketNotification("CPWA_UPDATE", validEntries);
+                if (this.config.showNoAlertsMsg) {
+                    this.sendSocketNotification("CPWA_UPDATE", this.entries);
                 } else {
-                    // Filter out unimportant alert entries
-                    let noAlertsEn = "No alerts in effect";
-                    let noAlertsFr = "Aucune alerte en vigueur";
-                    let filteredEntries = validEntries.filter( e =>
-                        !e.summary[0]._.includes(noAlertsEn) &&
-                        !e.summary[0]._.includes(noAlertsFr)
-                    );
-                    this.sendSocketNotification("CPWA_UPDATE", filteredEntries);
+                    this.sendSocketNotification("CPWA_UPDATE", this.filterEntries(this.entries));
                 }
             }
         });
     },
+
+    
+    // Filter out unimportant alert entries
+    filterEntries(entries) {
+        let noAlertsEn = "No alerts in effect";
+        let noAlertsFr = "Aucune alerte en vigueur";
+        return entries.filter( e =>
+            !e.summary[0]._.includes(noAlertsEn) &&
+            !e.summary[0]._.includes(noAlertsFr)
+        );
+    },
+
+
     // Generates an array of urls using configured region codes
-    generateUrls(regions) {
+    generatePaths(regions) {
         let urls = [];
         for (let i = 0; i < regions.length; i++) {
-            let url = this.config.apiBase + regions[i].code + "_" + this.config.lang.slice(0,1) + ".xml";
+            let url = "/rss/battleboard/" + regions[i].code + "_" + this.config.lang.slice(0,1) + ".xml";
             urls.push(url);
         }
         return urls;
     },
+
+
     getData(url, callback) {
-        // use axios to retrieve data from canadian government
-        axios({
-            method: 'GET',
-            url: url,
-            headers: {'Content-type': 'application/atom+xml'}
-        }).then( (response) => {
-            if (response.status == 200) {
-                this.parseData(response, callback);
+        let options = {
+            hostname: this.config.apiBase,
+            path: url
+        }
+        let data = "";
+        https.get(options, (response) => {
+            if (response.statusCode < 200 || response.statusCode > 299) {
+                response.on('data', () => {
+                    callback("["+ this.name + "] Could not get alert data from " + url + " - Error " + response.statusCode)
+                });
             } else {
-                callback("["+ this.name + "] Could not get alert data from " + url + " - " + response.status + response.statusText)
+                response.on('data', (chunk) => { data += chunk; });
+                response.on('end', () => { this.parseData(data, callback); });
             }
+            response.on('error', (err) => {
+               callback("["+ this.name + "] Failed making http request - " + err);
+            });
         });
     },
-    parseData(response, callback) {
-        // parse xml body and save usable data into array
+
+
+    parseData(data, callback) {
         let parser = new xml2js.Parser();
-        parser.parseString(response.data, (err, result) => {
+        parser.parseString(data, (err, result) => {
+            let entries = result['feed']['entry'];
             if (!err) {
-                this.tmpJson.push(result['feed']['entry']);
-                callback(null);
+                for (let i = 0; i < entries.length; i++) {
+                    this.entries.push(entries[i]);
+                }
             } else {
                 console.log("[" + this.name + "] " + "Error parsing XML data: " + err);
                 callback(err);
             }
+            callback(null);
         });
     },
+
+
     socketNotificationReceived(notification, payload) {
-        if (notification === 'CPWA_CONFIG' && this.started == false) {
+        if (notification === 'CPWA_CONFIG') {
             this.config = payload;
             this.sendSocketNotification("CPWA_STARTED", true);
-            this.started = true;
         } else if (notification === 'CPWA_REQUEST_UPDATE') {
             this.startUpdate();
         }

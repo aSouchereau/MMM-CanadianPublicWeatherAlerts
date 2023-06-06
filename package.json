@@ -1,6 +1,6 @@
 {
   "name": "MMM-CanadianPublicWeatherAlerts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "displayName": "MMM-CanadianPublicWeatherAlerts",
   "description": "Gets weather watches, warnings, and advisories for user specified regions. Using data published by Environment Canada. ",
   "main": "",
@@ -30,7 +30,6 @@
   "homepage": "https://github.com/aSouchereau/MMM-CanadianPublicWeatherAlerts#readme",
   "dependencies": {
     "xml2js": "^0.4.23",
-    "async": "^3.2.4",
-    "axios": "^1.2.1"
+    "async": "^3.2.4"
   }
 }
