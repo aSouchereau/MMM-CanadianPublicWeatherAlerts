@@ -1,14 +1,33 @@
 .MMM-CanadianPublicWeatherAlerts.alert-title {
-    font-size: 2rem;
-}
-.MMM-CanadianPublicWeatherAlerts.alert-region {
     font-size: 1.5rem;
-    position: relative;
-    top: -10px;
+    font-weight: 600;
+    line-height: 1.15;
+    max-width: 100%;
+    word-wrap: break-word;
 }
+
+/* Alert severity colors – tuned for black background, low eye strain */
+.MMM-CanadianPublicWeatherAlerts.alert-title.severity-yellow {
+    color: #FFD24D !important; /* warm amber yellow */
+}
+
+.MMM-CanadianPublicWeatherAlerts.alert-title.severity-orange {
+    color: #FF9F1C !important; /* strong but soft orange */
+}
+
+.MMM-CanadianPublicWeatherAlerts.alert-title.severity-red {
+    color: #FF5C5C !important; /* softened alert red (not eye-searing) */
+}
+
+.MMM-CanadianPublicWeatherAlerts.alert-region {
+    font-size: 1.2rem;
+    opacity: 0.85;
+    margin-top: -0.4rem;
+}
+
 .MMM-CanadianPublicWeatherAlerts.alert-time {
-    font-size: 1rem;
-    font-weight: 100;
-    position: relative;
-    top: -30px;
+    font-size: 0.95rem;
+    font-weight: 300;
+    opacity: 0.7;
+    margin-top: -0.6rem;
 }

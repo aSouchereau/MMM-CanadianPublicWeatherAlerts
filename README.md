@@ -2,11 +2,13 @@
 
 A module for [MagicMirror](https://github.com/MichMich/MagicMirror) to display [Canadian Public Weather Alerts](https://weather.gc.ca/warnings/index_e.html) provided by Environment Canada.
 
-Description:
+## Description
 
-Gets weather watches, warnings, and advisories for user specified regions. Using data published by Environment Canada.
+Gets weather watches, warnings, and advisories for user specified regions using data published by Environment Canada.
 
-<img src="./img/AlertExample.gif" width="400">
+Environment Canada has transitioned from the previous alert presentation format to a severity-based system using **YELLOW / ORANGE / RED** prefixes. The module understands these severity prefixes, visually highlights alert titles accordingly, and orders alerts by severity (highest first) and then by most recent update so the most important information is shown first.
+
+<img src="./img/AlertExample.png" width="400">
 
 ## Installation
 
@@ -50,10 +52,11 @@ Gets weather watches, warnings, and advisories for user specified regions. Using
 | `showNoAlertsMsg` | If set to true, the module will display a "No alerts in effect" message for each region.                                                                                                                               | false       |              |
 | `periodicSync`    | If set to true, the module will periodically resend the config and request a new update from the server. This is helpful for server only installations where a client may become "out of sync" if the server restarts. | false       |              |
 | `syncInterval`    | Sets the amount of time between each sync. By default (if enabled), the module will sync with the server once every 10 minutes.                                                                                        | 600000      |              |
+| `debug` | Enables verbose logging for alert intake, severity detection, sorting, and alert rotation. Useful for troubleshooting feed or display issues. | false | |
 
 
 ### Regions
-** Note: Environment Canada has recently redesigned their weather alerts system. It may now be more difficult to find your region code from the alerts page. You should now use the atom feeds page linked below.
+**Note:** Environment Canada has redesigned their weather alerts system, including a move to severity-based YELLOW / ORANGE / RED alerts. As part of this change, region codes are no longer easily discoverable from the public alerts page.
 
 Environment Canada publishes weather alerts for regions across the country. Regions are represented by a region code that follows the format of `xx00` or `xxrm00`.
 
@@ -111,13 +114,28 @@ Copy the region code into your config. Repeat for any other regions you want to 
 #### syncInterval
 - Sets the amount of time between each sync.
 - It is recommended to set this value to something longer than your updateInterval. 
+- The module guards against duplicate update and sync timers when reloaded or when configuration options change, ensuring stable long-running operation.
 
 ## Custom Styling
 
-Each element is assigned a class that denotes its type. You can target this class in the mirror's `custom.css` file.
+Each element is assigned a class that denotes its type. You can target these classes in the mirror's `custom.css` file to customize appearance. Additional classes are applied dynamically based on alert severity (see below).
 
 | **Element** | **Class**      |
 |-------------|----------------|
 | Title       | `alert-title`  |
 | Location    | `alert-region` |
 | Time Since  | `alert-time`   |
+
+### Severity Styling
+
+These severity classes directly reflect Environment Canada’s current alert severity system and are not user-defined.
+
+When Environment Canada includes a severity prefix in the alert title, the following CSS classes are automatically applied to the alert title element:
+
+| **Severity** | **CSS Class** |
+|--------------|---------------|
+| Yellow       | `severity-yellow` |
+| Orange       | `severity-orange` |
+| Red          | `severity-red` |
+
+These classes allow users to customize alert colors (for example, to ensure good contrast on dark backgrounds) using `custom.css` or by modifying the module’s stylesheet.

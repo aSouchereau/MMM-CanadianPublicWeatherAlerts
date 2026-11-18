@@ -23,78 +23,109 @@ module.exports = NodeHelper.create({
 
     startUpdate() {
         this.entries = []; // clear previously fetched entries
-        let urls = this.generatePaths(this.config.regions);    // Generate new urls
+
+        if (!this.config || !Array.isArray(this.config.regions) || this.config.regions.length === 0) {
+            console.log(`[${this.name}] No regions configured; sending empty update`);
+            this.sendSocketNotification("CPWA_UPDATE", []);
+            return;
+        }
+
+        if (!this.config.apiBase) {
+            console.log(`[${this.name}] Missing apiBase in config; sending empty update`);
+            this.sendSocketNotification("CPWA_UPDATE", []);
+            return;
+        }
+
+        let urls = this.generatePaths(this.config.regions); // Generate new urls
+
         // Foreach generated url, call getData()
         async.each(urls, this.getData.bind(this), (err) => {
             if (err) {
                 console.log(err);
-            } else {
-                if (this.config.showNoAlertsMsg) {
-                    this.sendSocketNotification("CPWA_UPDATE", this.entries);
-                } else {
-                    this.sendSocketNotification("CPWA_UPDATE", this.filterEntries(this.entries));
-                }
             }
+
+            const out = (this.config.showNoAlertsMsg) ? this.entries : this.filterEntries(this.entries);
+            this.sendSocketNotification("CPWA_UPDATE", out);
         });
     },
 
-    
+
     // Filter out unimportant alert entries
     filterEntries(entries) {
-        let noAlertsEn = "No alerts in effect";
-        let noAlertsFr = "Aucune alerte en vigueur";
-        return entries.filter( e =>
-            !e.summary[0]._.includes(noAlertsEn) &&
-            !e.summary[0]._.includes(noAlertsFr)
-        );
+        const noAlertsEn = "No alerts in effect";
+        const noAlertsFr = "Aucune alerte en vigueur";
+
+        return (entries || []).filter((e) => {
+            const summary = e && e.summary && e.summary[0];
+            const text = summary && summary._ ? String(summary._) : "";
+            return !text.includes(noAlertsEn) && !text.includes(noAlertsFr);
+        });
     },
 
 
     // Generates an array of urls using configured region codes
     generatePaths(regions) {
-        let urls = [];
+        const urls = [];
+        const lang = (this.config && typeof this.config.lang === "string" && this.config.lang.length)
+          ? this.config.lang.slice(0, 1)
+          : "e"; // default to English if unset
+
         for (let i = 0; i < regions.length; i++) {
-            let url = "/rss/battleboard/" + regions[i].code + "_" + this.config.lang.slice(0,1) + ".xml";
-            urls.push(url);
+            const code = regions[i] && regions[i].code ? String(regions[i].code) : null;
+            if (!code) continue;
+            urls.push(`/rss/battleboard/${code}_${lang}.xml`);
         }
         return urls;
     },
 
 
     getData(url, callback) {
-        let options = {
+        const options = {
             hostname: this.config.apiBase,
-            path: url
-        }
-        let data = "";
-        https.get(options, (response) => {
-            if (response.statusCode < 200 || response.statusCode > 299) {
-                response.on('data', () => {
-                    callback("["+ this.name + "] Could not get alert data from " + url + " - Error " + response.statusCode)
-                });
-            } else {
-                response.on('data', (chunk) => { data += chunk; });
-                response.on('end', () => { this.parseData(data, callback); });
+            path: url,
+            method: "GET",
+            headers: {
+                "User-Agent": `MagicMirror/${this.name}`
             }
-            response.on('error', (err) => {
-               callback("["+ this.name + "] Failed making http request - " + err);
-            });
+        };
+
+        let data = "";
+        const req = https.get(options, (response) => {
+            if (response.statusCode < 200 || response.statusCode > 299) {
+                // Drain data to allow socket reuse, then callback once.
+                response.resume();
+                callback(`[${this.name}] Could not get alert data from ${url} - Error ${response.statusCode}`);
+                return;
+            }
+
+            response.on("data", (chunk) => { data += chunk; });
+            response.on("end", () => { this.parseData(data, callback); });
+        });
+
+        req.on("error", (err) => {
+            callback(`[${this.name}] Failed making https request - ${err}`);
+        });
+
+        req.setTimeout(15000, () => {
+            req.destroy(new Error("Request timed out"));
         });
     },
 
 
     parseData(data, callback) {
-        let parser = new xml2js.Parser();
+        const parser = new xml2js.Parser();
         parser.parseString(data, (err, result) => {
-            let entries = result['feed']['entry'];
-            if (!err) {
-                for (let i = 0; i < entries.length; i++) {
-                    this.entries.push(entries[i]);
-                }
-            } else {
-                console.log("[" + this.name + "] " + "Error parsing XML data: " + err);
+            if (err) {
+                console.log(`[${this.name}] Error parsing XML data: ${err}`);
                 callback(err);
+                return;
             }
+
+            const entries = result && result.feed && result.feed.entry ? result.feed.entry : [];
+            for (let i = 0; i < entries.length; i++) {
+                this.entries.push(entries[i]);
+            }
+
             callback(null);
         });
     },
