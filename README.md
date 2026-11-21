@@ -49,7 +49,7 @@ Environment Canada publishes weather alerts for regions across the country. Regi
 - `rm` may or may not be present in the code depending on your region. If so, be sure to include this in the config value.
 - `00` is a 1 - 4 digit number representing a region located in the province/territory.
 
-You can find your region code in the  
+Region codes can be found in [CODES_en.md](./CODES_en.md) or [CODES_fr.md](CODES_fr.md). The codes listed here may be out of date. If necessary, you can regenerate the table with `sh generate_codes_table.sh -l <en | fr> -o <filename.md>`
 
 
 
