@@ -14,10 +14,11 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         ],
         updateInterval: 60000, // once every minute (ms)
         animationSpeed: 1000, // one second (ms)
-        displayInterval: 5000, // displays each alert for 5 seconds
+        displayInterval: 5000, // Displays each alert for 5 seconds
         showNoAlertsMsg: false, // Displays "No alerts in Effect" message for each region if true
-        periodicSync: false, // If enabled, module will send config to node helper every user-defined interval (useful for server only setups)
+        periodicSync: false, // When enabled, module will send config to node helper every user-defined interval (useful for server only setups)
         syncInterval: 600000, // once every ten minutes (ms)
+        useSeverityColors: true, // Enable/disable severity color classes
 
         debug: false,
 
@@ -31,7 +32,7 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
 
 
     getScripts() {
-       return ["moment.js"];
+        return ["moment.js"];
     },
 
 
@@ -163,8 +164,20 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         const updatedRaw = (displayedAlert.updated && displayedAlert.updated[0]) ? displayedAlert.updated[0] : null;
         const timeText = updatedRaw ? moment(updatedRaw).fromNow() : "";
 
-        const severityClass = this.getSeverityClass(rawTitle);
-        this.AlertTitle = `<div class="${this.name} alert-title bright ${severityClass}">${titleText}</div>`;
+        // Apply color class or include color name in title based on config
+        let severityClass = this.getSeverityClass(rawTitle);
+        let finalTitleText = titleText;
+
+        if (!this.config.useSeverityColors) {
+            // Include the color name in the title text instead of applying a CSS class
+            const colorMatch = rawTitle.match(/^(YELLOW|ORANGE|RED)/i);
+            if (colorMatch) {
+                finalTitleText = `${colorMatch[0]} - ${titleText}`;
+            }
+            severityClass = ""; // No severity class applied
+        }
+
+        this.AlertTitle = `<div class="${this.name} alert-title bright ${severityClass}">${finalTitleText}</div>`;
         this.AlertRegion = regionText ? `<div class="${this.name} alert-region">${regionText}</div>` : "";
         this.AlertTime = timeText ? `<div class="${this.name} alert-time">${timePrefix} ${timeText}</div>` : "";
 
