@@ -1,4 +1,4 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module: CanadianPublicWeatherAlerts
  *
  * By Alex Souchereau http://github.com/aSouchereau

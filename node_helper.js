@@ -1,5 +1,5 @@
 'use strict';
-/* Magic Mirror
+/* MagicMirror²
  * Module: CanadianPublicWeatherAlerts
  *
  * By Alex Souchereau http://github.com/aSouchereau
@@ -9,7 +9,7 @@
 const NodeHelper = require('node_helper');
 const async = require('async');
 const xml2js = require('xml2js');
-const https = require('https');
+const https = require('node:https');
 
 
 

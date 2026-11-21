@@ -1,6 +1,6 @@
 # MMM-CanadianPublicWeatherAlerts
 
-A module for [MagicMirror](https://github.com/MichMich/MagicMirror) to display public weather alerts provided by Environment Canada.
+A module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) to display public weather alerts provided by Environment Canada.
 
 ## Description
 
