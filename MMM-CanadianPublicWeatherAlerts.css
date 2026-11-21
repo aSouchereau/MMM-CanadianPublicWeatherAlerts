@@ -6,17 +6,17 @@
     word-wrap: break-word;
 }
 
-/* Alert severity colors – tuned for black background, low eye strain */
+/* Alert severity colors */
 .MMM-CanadianPublicWeatherAlerts.alert-title.severity-yellow {
-    color: #FFD24D !important; /* warm amber yellow */
+    color: #FFD24D !important;
 }
 
 .MMM-CanadianPublicWeatherAlerts.alert-title.severity-orange {
-    color: #FF9F1C !important; /* strong but soft orange */
+    color: #FF9F1C !important;
 }
 
 .MMM-CanadianPublicWeatherAlerts.alert-title.severity-red {
-    color: #FF5C5C !important; /* softened alert red (not eye-searing) */
+    color: #FF5C5C !important;
 }
 
 .MMM-CanadianPublicWeatherAlerts.alert-region {
