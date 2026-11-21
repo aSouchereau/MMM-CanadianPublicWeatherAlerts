@@ -9,7 +9,7 @@
 const NodeHelper = require('node_helper');
 const async = require('async');
 const xml2js = require('xml2js');
-const https = require('node:https');
+const https = require('https');
 
 
 
