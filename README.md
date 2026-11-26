@@ -2,7 +2,11 @@
 
 A module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) to display public weather alerts provided by Environment Canada.
 
-## Description
+<img src="./img/AlertExample.png" width="400">
+
+**Multiple Alerts:**
+
+<img src="./img/MultipleAlertsExample.gif" width="400">
 
 Gets weather watches, warnings, and advisories for user specified regions using data published by Environment Canada.
 
