@@ -61,8 +61,7 @@ Region codes can be found in [CODES_en.md](./CODES_en.md) or [CODES_fr.md](CODES
 | `displayInterval`   | Sets the amount of time each alert is displayed for. Default value is `5 seconds`.                                                                                                                                     | 5000        |              |
 | `animationSpeed`    | Sets the speed of the cross-fade between each alert. Set to `0` to disable. Default value is `1 second`.                                                                                                               | 1000        |              |
 | `showNoAlertsMsg`   | If set to true, the module will display a "No alerts in effect" message for each region.                                                                                                                               | false       |              |
-| `periodicSync`      | If set to true, the module will periodically resend the config and request a new update from the server. This is helpful for server only installations where a client may become "out of sync" if the server restarts. | false       |              |
-| `syncInterval`      | Sets the amount of time between each config sync. By default (if enabled), the module will sync with the server once every 10 minutes.                                                                                 | 600000      |              |
+| ~~`periodicSync`~~  | No longer supported as it never worked as intended.                                                                                                                                                                    |             |              |
 | `useSeverityColors` | Display the alert title in the colour of its severity. Alert title is reformated to remove colour names.                                                                                                               | true        |              |
 | `debug`             | Enables verbose logging for alert intake, severity detection, sorting, and alert rotation. Useful for troubleshooting feed or display issues.                                                                          | false       |              |
 
@@ -81,11 +80,6 @@ Region codes can be found in [CODES_en.md](./CODES_en.md) or [CODES_fr.md](CODES
 `displayInterval` is the amount of time a single alert is displayed for, not including the animation speed. For example: 
 - Assume a `displayInterval` of 5 seconds, and an `animationSpeed` of 1 second.
 - The module will display a new alert every 6 seconds.
-
-#### syncInterval
-- Sets the amount of time between each sync.
-- It is recommended to set this value to something longer than your updateInterval. 
-- The module guards against duplicate update and sync timers when reloaded or when configuration options change, ensuring stable long-running operation.
 
 ## Custom Styling
 

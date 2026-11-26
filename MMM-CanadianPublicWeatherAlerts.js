@@ -16,8 +16,6 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         animationSpeed: 1000, // one second (ms)
         displayInterval: 5000, // Displays each alert for 5 seconds
         showNoAlertsMsg: false, // Displays "No alerts in Effect" message for each region if true
-        periodicSync: false, // When enabled, module will send config to node helper every user-defined interval (useful for server only setups)
-        syncInterval: 600000, // once every ten minutes (ms)
         useSeverityColors: true, // Enable/disable severity color classes
 
         debug: false,
@@ -48,36 +46,26 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         moment.locale(this.config.lang);
 
         this.sendSocketNotification('CPWA_CONFIG', this.config);
-        if (this.config.periodicSync) {
-            // Avoid duplicate intervals if the module is hot-reloaded.
-            if (this.syncTimer) clearInterval(this.syncTimer);
-            this.syncTimer = setInterval(() => { this.syncClient(); }, this.config.syncInterval);
-        }
-        else if (this.syncTimer) {
-            // Ensure no stale periodic sync timer remains when periodicSync is disabled
-            clearInterval(this.syncTimer);
-            this.syncTimer = null;
-        }
         this.scheduleUpdate(this.config.updateInterval);
     },
 
 
     // Sends update request to server every configured interval
     scheduleUpdate(delay) {
-        this.sendSocketNotification('CPWA_REQUEST_UPDATE', true);
+        if (this.config.debug) {
+            Log.log(`[${this.name}] Debug: Creating update schedule with interval (${this.config.updateInterval}ms)`);
+        }
+
+        this.sendSocketNotification('CPWA_REQUEST_UPDATE', {id: this.identifier, type: 'initial'});
 
         // Avoid duplicate intervals if the module is hot-reloaded.
         if (this.updateTimer) clearInterval(this.updateTimer);
         this.updateTimer = setInterval(() => {
-            this.sendSocketNotification('CPWA_REQUEST_UPDATE', true);
+            if (this.config.debug) {
+                Log.log(`[${this.name}] Debug: Requesting alerts update from server`);
+            }
+            this.sendSocketNotification('CPWA_REQUEST_UPDATE', {id: this.identifier, type: 'scheduled'});
         }, delay);
-    },
-
-    // Actions to be performed when a periodic sync is requested
-    syncClient() {
-        console.log("[" + this.name + "] Syncing with server");
-        this.sendSocketNotification('CPWA_CONFIG', this.config);
-        this.sendSocketNotification('CPWA_REQUEST_UPDATE', true);
     },
 
 

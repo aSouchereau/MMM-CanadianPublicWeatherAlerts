@@ -136,6 +136,9 @@ module.exports = NodeHelper.create({
             this.config = payload;
             this.sendSocketNotification("CPWA_STARTED", true);
         } else if (notification === 'CPWA_REQUEST_UPDATE') {
+            if (this.config.debug) {
+                console.log(`[${this.name}] Received update request from id: ${payload.id}, with type: ${payload.type}`);
+            }
             this.startUpdate();
         }
 
