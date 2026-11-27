@@ -11,13 +11,30 @@ const async = require('async');
 const xml2js = require('xml2js');
 const https = require('https');
 
+const usePollingFallback = true; // planned fallback for failed AMQP connection
+const pollInterval = 240000; // (4 minutes)
 
 
 module.exports = NodeHelper.create({
+    pollClock: undefined,
+
     start() {
         this.config = {};
         console.log("Starting node helper for: " + this.name);
+    },
 
+
+    /**
+     *
+     * @param state boolean: true enables/resets clock, false disables it
+     */
+    initPolling(state) {
+        if (this.pollClock) clearInterval(this.pollClock);
+        if (usePollingFallback && state) {
+            this.pollClock = setInterval(() => {
+                this.startUpdate();
+            }, pollInterval);
+        }
     },
 
 

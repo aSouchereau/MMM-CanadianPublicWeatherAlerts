@@ -12,7 +12,6 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
                 code: ""
             }
         ],
-        updateInterval: 60000, // once every minute (ms)
         animationSpeed: 1000, // one second (ms)
         displayInterval: 5000, // Displays each alert for 5 seconds
         showNoAlertsMsg: false, // Displays "No alerts in Effect" message for each region if true
@@ -46,26 +45,6 @@ Module.register('MMM-CanadianPublicWeatherAlerts', {
         moment.locale(this.config.lang);
 
         this.sendSocketNotification('CPWA_CONFIG', this.config);
-        this.scheduleUpdate(this.config.updateInterval);
-    },
-
-
-    // Sends update request to server every configured interval
-    scheduleUpdate(delay) {
-        if (this.config.debug) {
-            Log.log(`[${this.name}] Debug: Creating update schedule with interval (${this.config.updateInterval}ms)`);
-        }
-
-        this.sendSocketNotification('CPWA_REQUEST_UPDATE', {id: this.identifier, type: 'initial'});
-
-        // Avoid duplicate intervals if the module is hot-reloaded.
-        if (this.updateTimer) clearInterval(this.updateTimer);
-        this.updateTimer = setInterval(() => {
-            if (this.config.debug) {
-                Log.log(`[${this.name}] Debug: Requesting alerts update from server`);
-            }
-            this.sendSocketNotification('CPWA_REQUEST_UPDATE', {id: this.identifier, type: 'scheduled'});
-        }, delay);
     },
 
 
